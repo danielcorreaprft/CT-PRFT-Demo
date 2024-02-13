@@ -25,6 +25,20 @@ class ProductController {
     this.handleResponse(res, data)
   }
 
+  async getProductById(req: Request, res: Response) {
+    const options = getOptions(req.headers)
+    const data = await new ProductRepository(options).getProductById(req.params.ID)
+
+    this.handleResponse(res, data)
+  }
+
+  async getVariantByIdForProduct(req: Request, res: Response) {
+    const options = getOptions(req.headers)
+    const data = await new ProductRepository(options).getVariantForProduct(req.params.key, req.params.variantId)
+
+    this.handleResponseVariant(res, data.serverResponse, data.variant);
+  }
+
   handleResponse(res, data){
     if (data.statusCode == 200) {
       return ResponseHandler.successResponse(
@@ -34,6 +48,24 @@ class ProductController {
           data.body
       )
     }
+    return this.handleErrorResponse(res, data);
+  }
+
+
+  handleResponseVariant(res, serverResponse, variant){
+    if (serverResponse.statusCode == 200) {
+      return ResponseHandler.successResponse(
+          res,
+          serverResponse.statusCode || serverResponse.body.statusCode,
+          serverResponse.message || serverResponse.body.message,
+          variant
+      )
+    }
+    return this.handleErrorResponse(res,serverResponse)
+  }
+
+
+  private handleErrorResponse(res, data) {
     return ResponseHandler.errorResponse(
         res,
         data.statusCode || data.body.statusCode,
