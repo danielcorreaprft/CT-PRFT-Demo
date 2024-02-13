@@ -20,14 +20,7 @@ const { getProducts, getProductByKey } = productController
  *             schema:
  *               type: array
  *               items:
- *                 type: object
- *                 properties:
- *                   id:
- *                     type: integer
- *                     description: Product ID.
- *                   name:
- *                     type: string
- *                     description: Product's name.
+ *                 $ref: '#/components/schemas/Product'
  */
 router.get('/products', getProducts.bind(productController))
 

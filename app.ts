@@ -2,7 +2,7 @@ import express, {ErrorRequestHandler, NextFunction, Request, Response} from "exp
 import routes from './routes'
 import cors from 'cors'
 import swaggerUi from 'swagger-ui-express';
-import swaggerSpecification from './swaggerDef';
+import swaggerSpecification from './swagger/swaggerDef';
 
 const  app = express();
 const { NODE_ENV } = process.env

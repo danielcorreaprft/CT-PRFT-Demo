@@ -9,7 +9,7 @@ const options = {
             description: 'CommerceTools SDK example documentation',
         },
     },
-    apis: ['./routes/*.ts'], // Path to the API docs
+    apis: ['./**/swagger/components.ts','./**/routes/*.ts'], // Path to the API docs
 };
 
 const swaggerSpecification = swaggerJsdoc(options);
