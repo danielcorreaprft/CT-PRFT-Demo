@@ -1,6 +1,8 @@
 import express, {ErrorRequestHandler, NextFunction, Request, Response} from "express";
 import routes from './routes'
 import cors from 'cors'
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpecification from './swagger/swaggerDef';
 
 const  app = express();
 const { NODE_ENV } = process.env
@@ -21,6 +23,8 @@ app.use((
   }
 })
 app.use(express.urlencoded({ extended: false }));
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecification));
 
 app.use('/', routes);
 
