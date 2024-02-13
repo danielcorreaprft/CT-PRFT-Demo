@@ -31,6 +31,21 @@ class Product implements IProductRepository {
       return error
     }
   }
+
+  async getProductByKey(key: string) {
+    try {
+      const product = await this.apiRoot
+          .withProjectKey({ projectKey: this.projectKey })
+          .products()
+          .withKey({key})
+          .get()
+          .execute()
+
+      return product
+    } catch (error) {
+      return error
+    }
+  }
 }
 
 export default Product

@@ -15,19 +15,30 @@ class ProductController {
     const options = getOptions(req.headers)
     const data = await new ProductRepository(options).getProducts()
 
+    this.handleResponse(res, data)
+  }
+
+  async getProductByKey(req: Request, res: Response) {
+    const options = getOptions(req.headers)
+    const data = await new ProductRepository(options).getProductByKey(req.params.key)
+
+    this.handleResponse(res, data)
+  }
+
+  handleResponse(res, data){
     if (data.statusCode == 200) {
       return ResponseHandler.successResponse(
+          res,
+          data.statusCode || data.body.statusCode,
+          data.message || data.body.message,
+          data.body
+      )
+    }
+    return ResponseHandler.errorResponse(
         res,
         data.statusCode || data.body.statusCode,
         data.message || data.body.message,
         data.body
-      )
-    }
-    return ResponseHandler.errorResponse(
-      res,
-      data.statusCode || data.body.statusCode,
-      data.message || data.body.message,
-      data.body
     )
   }
 }

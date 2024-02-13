@@ -4,13 +4,12 @@ import { ProductController } from '../controller'
 const productController = new ProductController()
 
 const router = Router()
-const { getProducts } = productController
-
+const { getProducts, getProductByKey } = productController
 
 /**
  * TODO: fill properties
  * @swagger
- * /product:
+ * /products:
  *   get:
  *     summary: Returns all products.
  *     responses:
@@ -30,6 +29,8 @@ const { getProducts } = productController
  *                     type: string
  *                     description: Product's name.
  */
-router.get('/product', getProducts.bind(productController))
+router.get('/products', getProducts.bind(productController))
+
+router.get('/product/:key', getProductByKey.bind(productController))
 
 export default router
