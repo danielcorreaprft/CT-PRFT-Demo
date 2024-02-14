@@ -5,6 +5,9 @@ interface IProductRepository {
   apiRoot: ApiRoot
   projectKey: string
   getProducts(): any | Error
+  getProductByKey(key: string): any | Error
+  getProductById(ID: string): any | Error
+  getVariantForProduct(variantID: string): any | Error
 }
 
 class Product implements IProductRepository {
@@ -62,19 +65,21 @@ class Product implements IProductRepository {
     }
   }
 
-  async getVariantForProduct(key: string, variantID: string) {
+  async getVariantForProduct(variantID: string) {
     try {
-      const serverResponse = await this.apiRoot
+      const variant = await this.apiRoot
           .withProjectKey({ projectKey: this.projectKey })
           .productProjections()
-          .withKey({ key })
-          .get()
+          .search()
+          .get({
+            queryArgs: {
+              filter: "variants.sku:\""+variantID+"\"",
+              staged: false
+            }
+          })
           .execute();
 
-      const variants = serverResponse.body.variants;
-      const variant = variants.find(v => v.sku === variantID);
-
-      return { serverResponse, variant };
+      return variant;
     } catch (error) {
       return error
     }

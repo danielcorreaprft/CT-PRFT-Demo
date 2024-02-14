@@ -69,13 +69,10 @@ router.get('/product/:ID', getProductById.bind(productController))
 /**
  * TODO: fill properties
  * @swagger
- * /product/{key}/variant/{variantId}:
+ * /product/variant/{variantId}:
  *   get:
  *     summary: Returns variant for given ID and product.
  *     parameters:
- *      - in: path
- *        name: key
- *        description: key of the product
  *      - in: path
  *        name: variantId
  *        description: ID of the variant
@@ -88,6 +85,6 @@ router.get('/product/:ID', getProductById.bind(productController))
  *               items:
  *                 $ref: '#/components/schemas/Product'
  */
-router.get('/product/:key/variant/:variantId', getVariantByIdForProduct.bind(productController))
+router.get('/product/variant/:variantId', getVariantByIdForProduct.bind(productController))
 
 export default router

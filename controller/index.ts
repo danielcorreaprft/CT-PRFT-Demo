@@ -1,5 +1,6 @@
 import ProductController from "./ProductController";
+import CategoryController from "./CategoryController";
 
 export {
-  ProductController
+  ProductController, CategoryController
 }
