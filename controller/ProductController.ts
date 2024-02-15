@@ -37,6 +37,13 @@ class ProductController {
 
     ResponseHandler.handleResponse(res, data)
   }
+
+  async getFreeTextSearchResult(req: Request, res: Response) {
+    const options = getOptions(req.headers)
+    const data = await new ProductRepository(options).getFreeTextSearchResult(<string>req.query.textSearch)
+
+    ResponseHandler.handleResponse(res, data)
+  }
 }
 
 export default ProductController

@@ -4,7 +4,7 @@ import { ProductController } from '../controller'
 const productController = new ProductController()
 
 const router = Router()
-const { getProducts, getProductByKey, getProductById, getVariantByIdForProduct } = productController
+const { getProducts, getProductByKey, getProductById, getVariantByIdForProduct, getFreeTextSearchResult } = productController
 
 /**
  * TODO: fill properties
@@ -23,6 +23,27 @@ const { getProducts, getProductByKey, getProductById, getVariantByIdForProduct }
  *                 $ref: '#/components/schemas/Product'
  */
 router.get('/products', getProducts.bind(productController))
+
+/**
+ * TODO: fill properties
+ * @swagger
+ * /product/search:
+ *   get:
+ *     summary: Returns search results for given text.
+ *     parameters:
+ *      - in: query
+ *        name: textSearch
+ *        description: free text to search
+ *     responses:
+ *       200:
+ *         description: A list of products.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               items:
+ *                 $ref: '#/components/schemas/Product'
+ */
+router.get('/product/search', getFreeTextSearchResult.bind(productController))
 
 /**
  * TODO: fill properties

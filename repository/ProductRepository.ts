@@ -9,6 +9,7 @@ interface IProductRepository {
   getProductByKey(key: string): any
   getProductById(ID: string): any
   getVariantForProduct(variantID: string): any
+  getFreeTextSearchResult(textSearch: string): any
 }
 
 class Product implements IProductRepository {
@@ -20,13 +21,11 @@ class Product implements IProductRepository {
 
   async getProducts() {
     try {
-      const products = await this.apiRoot
+      return await this.apiRoot
         .withProjectKey({ projectKey: this.projectKey })
         .products()
         .get()
         .execute()
-
-      return products
     } catch (error) {
       return error
     }
@@ -34,14 +33,12 @@ class Product implements IProductRepository {
 
   async getProductByKey(key: string) {
     try {
-      const product = await this.apiRoot
+      return await this.apiRoot
           .withProjectKey({ projectKey: this.projectKey })
           .products()
           .withKey({key})
           .get()
           .execute()
-
-      return product
     } catch (error) {
       return error
     }
@@ -49,14 +46,12 @@ class Product implements IProductRepository {
 
   async getProductById(ID: string) {
     try {
-      const product = await this.apiRoot
+      return await this.apiRoot
           .withProjectKey({ projectKey: this.projectKey })
           .products()
           .withId({ID})
           .get()
           .execute()
-
-      return product
     } catch (error) {
       return error
     }
@@ -64,7 +59,7 @@ class Product implements IProductRepository {
 
   async getVariantForProduct(variantID: string) {
     try {
-      const variant = await this.apiRoot
+      return await this.apiRoot
           .withProjectKey({ projectKey: this.projectKey })
           .productProjections()
           .search()
@@ -75,8 +70,24 @@ class Product implements IProductRepository {
             }
           })
           .execute();
+    } catch (error) {
+      return error
+    }
+  }
 
-      return variant;
+  async getFreeTextSearchResult(textSearch: string) {
+    try {
+      return await this.apiRoot
+          .withProjectKey({ projectKey: this.projectKey })
+          .productProjections()
+          .search()
+          .get({
+            queryArgs: {
+              "text.en": textSearch,
+              staged: false
+            }
+          })
+          .execute();
     } catch (error) {
       return error
     }
