@@ -29,7 +29,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecification));
 app.use('/', routes);
 
 
-app.use('*', async (_, res: Response) => {
+app.use('*', (_, res: Response) => {
   return res.status(404).json({
     status: 'error',
     data: {
