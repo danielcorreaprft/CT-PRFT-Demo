@@ -1,6 +1,5 @@
 import categoryRepository from "../../repository/CategoryRepository";
 import { createClient } from '../../utils/Client';
-import CategoryRepository from "../../repository/CategoryRepository";
 
 jest.mock('../../utils/Client', () => ({
     createClient: jest.fn(function (options) {
@@ -30,7 +29,7 @@ describe('CategoryRepository', () => {
     });
 
     it('should create a client with the provided options', () => {
-        new categoryRepository(mockOptions);
+        const repository = new categoryRepository(mockOptions);
         expect(createClient).toHaveBeenCalledWith(mockOptions);
     });
 
@@ -61,7 +60,7 @@ describe('CategoryRepository', () => {
             execute: jest.fn().mockRejectedValue(expectedError),
         }));
 
-        const categoryRepo = new CategoryRepository(mockOptions);
+        const categoryRepo = new categoryRepository(mockOptions);
         const error = await categoryRepo.getProductsForCategory('123');
 
         expect(error).toBe(expectedError);
