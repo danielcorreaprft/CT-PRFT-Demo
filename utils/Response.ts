@@ -61,6 +61,45 @@ class ResponseHandler {
       ...responseBody,
     })
   }
+
+  /**
+   *
+   * @description method to handle all responses
+   *
+   * @param res Object
+   * @param data Object | Array
+   *
+   * @return response JSON
+   */
+  static handleResponse(res, data){
+    if (data.statusCode == 200) {
+      return this.successResponse(
+          res,
+          data.statusCode || data.body.statusCode,
+          data.message || data.body.message,
+          data.body
+      )
+    }
+    return this.handleErrorResponse(res, data);
+  }
+
+  /**
+   *
+   * @description method to handle all responses
+   *
+   * @param res Object
+   * @param data Object | Array
+   *
+   * @return response JSON
+   */
+  static handleErrorResponse(res, data) {
+    return this.errorResponse(
+        res,
+        data.statusCode || data.body.statusCode,
+        data.message || data.body.message,
+        data.body
+    )
+  }
 }
 
 export default ResponseHandler

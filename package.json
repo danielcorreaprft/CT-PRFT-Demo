@@ -10,12 +10,14 @@
     "@commercetools/sdk-client-v2": "^0.2.0",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
     "debug": "~2.6.9",
+    "dotenv": "^10.0.0",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
-    "pug": "2.0.0-beta11"
+    "pug": "2.0.0-beta11",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
