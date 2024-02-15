@@ -20,7 +20,7 @@ class ResponseHandler {
    *
    * @return response JSON
    */
-  static successResponse = (response, statusCode, message, data) => {
+  static readonly successResponse = (response, statusCode, message, data) => {
     const responseBody: Response = { status: 'success' }
 
     if (message !== '') {
@@ -47,7 +47,7 @@ class ResponseHandler {
    *
    * @return response JSON
    */
-  static errorResponse = (response, statusCode, message, data) => {
+  static readonly errorResponse = (response, statusCode, message, data) => {
     const responseBody: Response = { status: 'error' }
     if (message !== '') {
       responseBody.message = message

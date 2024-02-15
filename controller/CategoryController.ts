@@ -9,7 +9,6 @@ import { getOptions } from '../utils/options'
  * @function registerUser
  */
 class CategoryController {
-    constructor() {}
 
     async getProductsForCategory(req: Request, res: Response) {
         const options = getOptions(req.headers)
