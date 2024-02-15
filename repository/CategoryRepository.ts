@@ -1,10 +1,10 @@
-import Client from '../client/Client'
 import { ApiRoot } from '@commercetools/platform-sdk'
+import {createClient} from "../utils/Client";
 
 interface ICategoryRepository {
     apiRoot: ApiRoot
     projectKey: string
-    getProductsForCategory(id: string): any | Error
+    getProductsForCategory(id: string): any
 }
 
 class Category implements ICategoryRepository {
@@ -12,11 +12,7 @@ class Category implements ICategoryRepository {
     projectKey: string
 
     constructor(options) {
-        const rootClient = new Client(options)
-        this.apiRoot = rootClient.getApiRoot(
-            rootClient.getClientFromOption(options)
-        )
-        this.projectKey = rootClient.getProjectKey()
+        createClient.call(this, options);
     }
 
     async getProductsForCategory(id: string) {
