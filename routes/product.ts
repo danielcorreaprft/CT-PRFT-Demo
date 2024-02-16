@@ -69,7 +69,7 @@ router.get('/product/:key', getProductByKey.bind(productController))
 /**
  * TODO: fill properties
  * @swagger
- * /product/{ID}:
+ * /product/id/{ID}:
  *   get:
  *     summary: Returns product for given ID.
  *     parameters:
@@ -85,7 +85,7 @@ router.get('/product/:key', getProductByKey.bind(productController))
  *               items:
  *                 $ref: '#/components/schemas/Product'
  */
-router.get('/product/:ID', getProductById.bind(productController))
+router.get('/product/id/:ID', getProductById.bind(productController))
 
 /**
  * TODO: fill properties
