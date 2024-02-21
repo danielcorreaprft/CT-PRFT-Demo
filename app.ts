@@ -3,9 +3,21 @@ import routes from './routes'
 import cors from 'cors'
 import swaggerUi from 'swagger-ui-express';
 import swaggerSpecification from './swagger/swaggerDef';
+import dotenv from 'dotenv'
+import fs from 'fs';
+import path from 'path';
 
 const  app = express();
-const { NODE_ENV } = process.env
+
+const nodeEnv = process.env.NODE_ENV || 'development';
+const envFile = `.env.${nodeEnv}`;
+const envPath = path.resolve(process.cwd(), envFile);
+
+if (fs.existsSync(envPath)) {
+  dotenv.config({ path: envPath });
+} else {
+  dotenv.config();
+}
 
 // view engine setup
 app.use(cors())
@@ -24,7 +36,9 @@ app.use((
 })
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecification));
+if (process.env.ENABLE_SWAGGER === 'true') {
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecification));
+}
 
 app.use('/', routes);
 

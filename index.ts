@@ -1,5 +1,5 @@
 import dotenv from "dotenv"
-import server from "./app"
+import app from "./app"
 
 dotenv.config();
 
@@ -13,6 +13,6 @@ process.on('uncaughtException', function(error, origin) {
 })
 
 // start
-server.listen(process.env.PORT, () => console.log(`server listening on port ${process.env.PORT}`))
+const server = app.listen(process.env.PORT, () => console.log(`server listening on port ${process.env.PORT}`))
 
 export default server
