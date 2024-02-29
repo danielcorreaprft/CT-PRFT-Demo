@@ -4,6 +4,7 @@ import { CustomerRepository } from '../repository'
 import { getOptions } from '../utils/options'
 import { CustomerDraft } from "@commercetools/platform-sdk";
 
+
 class CustomerController {
 
     async createCustomer(req: Request, res: Response) {
@@ -11,6 +12,10 @@ class CustomerController {
         const customerDraft: CustomerDraft = req.body
         const data = await new CustomerRepository(options).registerCustomer(customerDraft)
         ResponseHandler.handleResponse(res, data)
+    }
+
+    async processLogin(req: Request, res: Response) {
+        console.log("Login");
     }
 }
 
