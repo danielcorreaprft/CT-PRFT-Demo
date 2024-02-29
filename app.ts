@@ -72,11 +72,8 @@ passport.serializeUser( (user, done) => {
 } )
 
 passport.deserializeUser((user, done) => {
-  console.log("\n--------- Deserialized User:")
-  console.log(user)
   // This is the {user} that was saved in req.session.passport.user.{user} in the serializationUser()
   // deserializeUser will attach this {user} to the "req.user.{user}", so that it can be used anywhere in the App.
-
   done (null, user)
 })
 

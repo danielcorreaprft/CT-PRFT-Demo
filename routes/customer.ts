@@ -14,7 +14,9 @@ router.get('/auth/google', passport.authenticate('google', {
     scope: ['email', 'profile']
 }));
 
-router.get('/auth/facebook', passport.authenticate('facebook'));
+router.get('/auth/facebook', passport.authenticate('facebook',{
+    scope: ['email']
+}));
 
 router.get('/auth/google/callback', passport.authenticate('google', {
     successRedirect: '/process-login',
@@ -30,8 +32,8 @@ router.get('/login', (req, res) => {
     res.send("Login failed");
 });
 router.get('/process-login', (req:AuthRequest, res) => {
-    const email = req.user.email;
-    console.log(req);
-    res.send(`Welcome ${email}`);
+    const email = req.user.emails[0];
+    console.log(req.user)
+    res.send(`Welcome ${email.value}`);
 });
 export default router
