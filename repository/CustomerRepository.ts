@@ -6,6 +6,7 @@ interface ICustomerRepository {
     projectKey: string
 
     registerCustomer(customer: CustomerDraft): any
+    checkCustomerExist(email:string):any
 }
 
 class Customer implements ICustomerRepository {
@@ -23,6 +24,21 @@ class Customer implements ICustomerRepository {
                 .customers()
                 .post({
                     body: customer
+                }).execute()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async checkCustomerExist(email: string) {
+        try {
+            return await this.apiRoot
+                .withProjectKey({projectKey: this.projectKey})
+                .customers()
+                .get({
+                    queryArgs: {
+                        where: "email%3D\""+email+"\""
+                    }
                 }).execute()
         } catch (error) {
             return error
