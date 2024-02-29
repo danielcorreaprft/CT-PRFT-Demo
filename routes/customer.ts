@@ -1,7 +1,7 @@
-import { Router } from 'express'
+import  { Router, Request } from 'express'
 import { CustomerController } from '../controller'
 import passport from 'passport'
-
+import AuthRequest from "../types/AuthRequest";
 
 const customerController = new CustomerController()
 
@@ -14,7 +14,14 @@ router.get('/auth/google', passport.authenticate('google', {
     scope: ['email', 'profile']
 }));
 
+router.get('/auth/facebook', passport.authenticate('facebook'));
+
 router.get('/auth/google/callback', passport.authenticate('google', {
+    successRedirect: '/process-login',
+    failureRedirect: '/login'
+}));
+
+router.get('/auth/facebook/callback', passport.authenticate('facebook', {
     successRedirect: '/process-login',
     failureRedirect: '/login'
 }));
@@ -22,8 +29,9 @@ router.get('/auth/google/callback', passport.authenticate('google', {
 router.get('/login', (req, res) => {
     res.send("Login failed");
 });
-router.get('/process-login', (req, res) => {
-    const name = req.user.displayName;
-    res.send(`Welcome`);
+router.get('/process-login', (req:AuthRequest, res) => {
+    const email = req.user.email;
+    console.log(req);
+    res.send(`Welcome ${email}`);
 });
 export default router

@@ -9,6 +9,7 @@ import path from 'path';
 import session from 'express-session';
 import passport from 'passport'
 const GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
+const FacebookStrategy = require( 'passport-facebook' ).Strategy;
 
 const  app = express();
 
@@ -52,10 +53,18 @@ let authUser = (req:Request, accessToken, refreshToken, profile, done) => {
 }
 
 passport.use(new GoogleStrategy({
-  clientID:     process.env.GOOGLE_CLIENT_ID,
+  clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
   callbackURL: "http://localhost:8085/auth/google/callback",
-  passReqToCallback   : true
+  passReqToCallback: true
+}, authUser));
+
+passport.use(new FacebookStrategy({
+  clientID: process.env.FACEBOOK_APP_ID,
+  clientSecret: process.env.FACEBOOK_APP_SECRET,
+  callbackURL: "http://localhost:8085/auth/facebook/callback",
+  profileFields: ['emails'],
+  enableProof: true
 }, authUser));
 
 passport.serializeUser( (user, done) => {

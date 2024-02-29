@@ -14,12 +14,10 @@
     "strict": false /* Enable all strict type-checking options. */,
 
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
-    "skipLibCheck": false,
-    "typeRoots": ["./node_modules/@types", "./types"],
-    "types": ["express", "node"]
+    "skipLibCheck": true
   },
   "include": [
-    "types/custom.d.ts",
+    "types/express.d.ts",
     "**/*"
   ]
 }
