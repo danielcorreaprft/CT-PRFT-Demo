@@ -40,7 +40,7 @@ class ResponseHandler {
    *
    * @description method to handle all error responses
    *
-   * @parma { response object }
+   * @param response
    * @param statusCode
    * @param message
    * @param data
