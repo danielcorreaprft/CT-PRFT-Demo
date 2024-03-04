@@ -1,6 +1,5 @@
 import {ApiRoot, CustomerDraft, CustomerSignin} from '@commercetools/platform-sdk'
 import {createClient} from "../utils/Client";
-import {AuthenticationMode, ExternalCustomerDraft} from "../types/ExternalCustomerDraft"
 
 interface ICustomerRepository {
     apiRoot: ApiRoot
