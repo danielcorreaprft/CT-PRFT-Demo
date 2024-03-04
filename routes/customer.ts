@@ -1,13 +1,32 @@
-import  { Router, Request } from 'express'
+import  { Router } from 'express'
 import { CustomerController } from '../controller'
 import passport from 'passport'
-import AuthRequest from "../types/AuthRequest";
 
 const customerController = new CustomerController()
 
 const router = Router()
-const { createCustomer, processLogin } = customerController
+const { createCustomer, processExternalAuth, processLogin } = customerController
 
+/**
+ * TODO: fill properties
+ * @swagger
+ * /register:
+ *   post:
+ *     summary: Register a new customer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CustomerDraft'
+ *     responses:
+ *       200:
+ *         description: A created cart.
+ *         content:
+ *           application/json:
+ *             schema:
+ *              $ref: '#/components/schemas/CustomerSignInResult'
+ */
 router.post('/register/', createCustomer.bind(customerController))
 
 router.get('/auth/google', passport.authenticate('google', {
@@ -19,21 +38,36 @@ router.get('/auth/facebook', passport.authenticate('facebook',{
 }));
 
 router.get('/auth/google/callback', passport.authenticate('google', {
-    successRedirect: '/process-login',
+    successRedirect: '/process-external-login',
     failureRedirect: '/login'
 }));
 
 router.get('/auth/facebook/callback', passport.authenticate('facebook', {
-    successRedirect: '/process-login',
+    successRedirect: '/process-external-login',
     failureRedirect: '/login'
 }));
 
-router.get('/login', (req, res) => {
-    res.send("Login failed");
-});
-router.get('/process-login', (req:AuthRequest, res) => {
-    const email = req.user.emails[0];
-    console.log(req.user)
-    res.send(`Welcome ${email.value}`);
-});
+/**
+ * TODO: fill properties
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Login customer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CustomerSignin'
+ *     responses:
+ *       200:
+ *         description: A created cart.
+ *         content:
+ *           application/json:
+ *             schema:
+ *              $ref: '#/components/schemas/CustomerSignInResult'
+ */
+router.post('/login', processLogin.bind(customerController));
+
+router.get('/process-external-login', processExternalAuth.bind(customerController));
 export default router

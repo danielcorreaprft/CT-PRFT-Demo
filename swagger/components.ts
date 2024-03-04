@@ -61,5 +61,53 @@
  *         quantity:
  *           type: number
  *           description: qty to add.
+ *     Customer:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: Customer id.
+ *         version:
+ *           type: string
+ *           description: Customer version.
+ *         email:
+ *           type: string
+ *           description: Customer email.
+ *     CustomerDraft:
+ *       type: object
+ *       properties:
+ *         email:
+ *           type: string
+ *           description: Customer email.
+ *         password:
+ *           type: string
+ *           description: Customer password.
+ *     CustomerSignin:
+ *       type: object
+ *       properties:
+ *         email:
+ *           type: string
+ *           description: Customer email.
+ *         password:
+ *           type: string
+ *           description: Customer password.
+ *         anonymousCart:
+ *           type: string
+ *           description: Identifies a Cart that will be assigned to the Custome.
+ *         anonymousCartSignInMode:
+ *           type: string
+ *           description: MergeWithExistingCustomerCart or UseAsNewActiveCustomerCart.
+ *         anonymousId:
+ *           type: string
+ *           description: If both anonymousCart and anonymousId are provided, the anonymousId on the CustomerSignin must match that of the anonymous Cart.
+ *     CustomerSignInResult:
+ *       type: object
+ *       properties:
+ *         customer:
+ *           type: Customer
+ *           description: Customer.
+ *         actions:
+ *           type: Cart
+ *           description: Cart.
  */
 

@@ -1,5 +1,6 @@
-import { ApiRoot, CustomerDraft } from '@commercetools/platform-sdk'
-import { createClient } from "../utils/Client";
+import {ApiRoot, CustomerDraft, CustomerSignin} from '@commercetools/platform-sdk'
+import {createClient} from "../utils/Client";
+import {AuthenticationMode, ExternalCustomerDraft} from "../types/ExternalCustomerDraft"
 
 interface ICustomerRepository {
     apiRoot: ApiRoot
@@ -7,6 +8,7 @@ interface ICustomerRepository {
 
     registerCustomer(customer: CustomerDraft): any
     checkCustomerExist(email:string):any
+    signInCustomer(customer: CustomerSignin):any
 }
 
 class Customer implements ICustomerRepository {
@@ -37,8 +39,21 @@ class Customer implements ICustomerRepository {
                 .customers()
                 .get({
                     queryArgs: {
-                        where: "email%3D\""+email+"\""
+                        where: "email=\""+email+"\""
                     }
+                }).execute()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async signInCustomer(customer: CustomerSignin) {
+        try {
+            return await this.apiRoot
+                .withProjectKey({projectKey: this.projectKey})
+                .login()
+                .post({
+                    body: customer
                 }).execute()
         } catch (error) {
             return error
