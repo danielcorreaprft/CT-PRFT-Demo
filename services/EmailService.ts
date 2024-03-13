@@ -14,7 +14,7 @@ class EmailService {
         });
     }
 
-    async sendResetPasswordEmail(email: String, token: String) {
+    async sendResetPasswordEmail(email: string, token: string) {
         // send mail with defined transport object
         const info = await this.initTransporter().sendMail({
             from: 'cocampo503@gmail.com', // sender address
@@ -26,7 +26,7 @@ class EmailService {
         console.log("Message sent: %s", info.messageId);
     }
 
-    async sendSuccessResetPasswordEmail(email: String) {
+    async sendSuccessResetPasswordEmail(email: string) {
         // send mail with defined transport object
         const info = await this.initTransporter().sendMail({
             from: 'cocampo503@gmail.com', // sender address
