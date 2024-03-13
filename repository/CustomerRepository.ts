@@ -1,13 +1,21 @@
-import {ApiRoot, CustomerDraft, CustomerSignin} from '@commercetools/platform-sdk'
-import {createClient} from "../utils/Client";
+import {
+    ApiRoot,
+    CustomerCreatePasswordResetToken,
+    CustomerDraft,
+    CustomerResetPassword,
+    CustomerSignin
+} from '@commercetools/platform-sdk'
+import { createClient } from "../utils/Client";
 
 interface ICustomerRepository {
     apiRoot: ApiRoot
     projectKey: string
 
     registerCustomer(customer: CustomerDraft): any
-    checkCustomerExist(email:string):any
-    signInCustomer(customer: CustomerSignin):any
+
+    checkCustomerExist(email: string): any
+
+    signInCustomer(customer: CustomerSignin): any
 }
 
 class Customer implements ICustomerRepository {
@@ -38,7 +46,7 @@ class Customer implements ICustomerRepository {
                 .customers()
                 .get({
                     queryArgs: {
-                        where: "email=\""+email+"\""
+                        where: "email=\"" + email + "\""
                     }
                 }).execute()
         } catch (error) {
@@ -53,6 +61,32 @@ class Customer implements ICustomerRepository {
                 .login()
                 .post({
                     body: customer
+                }).execute()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async getResetCustomerPassword(passwordResetToken: CustomerCreatePasswordResetToken) {
+        try {
+            return await this.apiRoot.withProjectKey({projectKey: this.projectKey})
+                .customers()
+                .passwordToken()
+                .post({
+                    body: passwordResetToken
+                }).execute()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async resetCustomerPasswordWithToken(customerResetPassword: CustomerResetPassword) {
+        try {
+            return await this.apiRoot.withProjectKey({projectKey: this.projectKey})
+                .customers()
+                .passwordReset()
+                .post({
+                    body: customerResetPassword
                 }).execute()
         } catch (error) {
             return error
