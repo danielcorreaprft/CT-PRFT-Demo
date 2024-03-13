@@ -85,6 +85,19 @@ class ResponseHandler {
 
   /**
    *
+   * @description method to handle unauthorized errors
+   *
+   * @param res Object
+   * @param data Object | Array
+   *
+   * @return response JSON
+   */
+  static handleUnauthorizedResponse(res) {
+    return this.handleErrorResponse(res, {statusCode: 401, message: "Invalid or expired access token"})
+  }
+
+  /**
+   *
    * @description method to handle all responses
    *
    * @param res Object

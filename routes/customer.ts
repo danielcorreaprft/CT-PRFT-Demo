@@ -37,12 +37,19 @@ router.get('/auth/facebook', passport.authenticate('facebook',{
     scope: ['email']
 }));
 
+router.get('/auth/credentials', passport.authenticate('oauth2'));
+
 router.get('/auth/google/callback', passport.authenticate('google', {
     successRedirect: '/process-external-login',
     failureRedirect: '/login'
 }));
 
 router.get('/auth/facebook/callback', passport.authenticate('facebook', {
+    successRedirect: '/process-external-login',
+    failureRedirect: '/login'
+}));
+
+router.get('/auth/credentials/callback', passport.authenticate('oauth2', {
     successRedirect: '/process-external-login',
     failureRedirect: '/login'
 }));

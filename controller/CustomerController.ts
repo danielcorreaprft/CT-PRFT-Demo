@@ -3,8 +3,9 @@ import { Request, Response } from 'express'
 import { CustomerRepository } from '../repository'
 import { getOptions } from '../utils/options'
 import {CustomerDraft, CustomerSignin} from "@commercetools/platform-sdk";
-import AuthRequest from "../types/AuthRequest";
+import AuthRequest, {IntrospectResponse} from "../types/Auth";
 import {AuthenticationMode, ExternalCustomerDraft} from "../types/ExternalCustomerDraft";
+import {introspectToken} from "../utils/Introspect"
 
 
 class CustomerController {
@@ -17,15 +18,25 @@ class CustomerController {
     }
 
     async processExternalAuth(req: AuthRequest, res: Response) {
-        const options = getOptions(req.headers)
-        const customerRepository : CustomerRepository = new CustomerRepository(options);
-        const email : string = req.user.emails[0].value;
-        let data = await customerRepository.checkCustomerExist(email)
-        if (data.body.count == 0){
-            const customerDraft: ExternalCustomerDraft = {email: email, authenticationMode: AuthenticationMode.ExternalAuth, password : undefined};
-            data = await customerRepository.registerCustomer(customerDraft);
+        const introspect : IntrospectResponse = await introspectToken(req.user.accessToken, req.user.authenticationProvider);
+        if (introspect.valid && introspect.expires_in > 0){
+            const options = getOptions(req.headers)
+            const customerRepository : CustomerRepository = new CustomerRepository(options);
+            const email : string = req.user.profile.emails[0].value;
+            let data = await customerRepository.checkCustomerExist(email)
+            if (data.body.count == 0){
+                const firstName: string = req.user.profile.given_name;
+                const lastName: string = req.user.profile.family_name;
+                const customerDraft: ExternalCustomerDraft = {
+                    email: email, firstName: firstName, lastName: lastName,
+                    authenticationMode: AuthenticationMode.ExternalAuth, password: undefined
+                };
+                data = await customerRepository.registerCustomer(customerDraft);
+            }
+            ResponseHandler.handleResponse(res, data);
+        }else {
+            ResponseHandler.handleUnauthorizedResponse(res);
         }
-        ResponseHandler.handleResponse(res, data)
     }
 
     async processLogin(req: Request, res: Response) {

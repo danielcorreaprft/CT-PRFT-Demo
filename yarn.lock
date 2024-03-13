@@ -1003,6 +1003,15 @@
   "resolved" "https://registry.npmjs.org/asynckit/-/asynckit-0.4.0.tgz"
   "version" "0.4.0"
 
+"axios@^1.6.7":
+  "integrity" "sha512-/hDJGff6/c7u0hDkvkGxR/oy6CbCs8ziCsC7SqmhjfozqiJGc8Z11wrv9z9lYfY4K8l+H9TpjcMDX0xOZmx+RA=="
+  "resolved" "https://registry.npmjs.org/axios/-/axios-1.6.7.tgz"
+  "version" "1.6.7"
+  dependencies:
+    "follow-redirects" "^1.15.4"
+    "form-data" "^4.0.0"
+    "proxy-from-env" "^1.1.0"
+
 "babel-jest@^29.0.0", "babel-jest@^29.7.0":
   "integrity" "sha512-BrvGY3xZSwEcCzKvKsCi2GgHqDqsYkOP4/by5xCgIwGXQxIEh+8ew3gmrE1y7XRR6LHZIj6yLYnUi/mm2KXKBg=="
   "resolved" "https://registry.npmjs.org/babel-jest/-/babel-jest-29.7.0.tgz"
@@ -1837,6 +1846,11 @@
     "locate-path" "^5.0.0"
     "path-exists" "^4.0.0"
 
+"follow-redirects@^1.15.4":
+  "integrity" "sha512-vSFWUON1B+yAw1VN4xMfxgn5fTUiaOzAJCKBwIIgT/+7CuGy9+r+5gITvP62j3RmaD5Ph65UaERdOSRGUzZtgw=="
+  "resolved" "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.5.tgz"
+  "version" "1.15.5"
+
 "foreground-child@^2.0.0":
   "integrity" "sha512-dCIq9FpEcyQyXKCkyzmlPTFNgrCzPudOe+mhvJU5zAtlBnGVy2yKxtfsxK2tQBThwq225jcvBjpw1Gr40uzZCA=="
   "resolved" "https://registry.npmjs.org/foreground-child/-/foreground-child-2.0.0.tgz"
@@ -1883,6 +1897,11 @@
   "integrity" "sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw=="
   "resolved" "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   "version" "1.0.0"
+
+"fsevents@^2.3.2":
+  "integrity" "sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw=="
+  "resolved" "https://registry.npmjs.org/fsevents/-/fsevents-2.3.3.tgz"
+  "version" "2.3.3"
 
 "function-bind@^1.1.2":
   "integrity" "sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA=="
@@ -3028,7 +3047,7 @@
   dependencies:
     "passport-oauth2" "^1.1.2"
 
-"passport-oauth2@^1.1.2", "passport-oauth2@1.x.x":
+"passport-oauth2@^1.1.2", "passport-oauth2@^1.8.0", "passport-oauth2@1.x.x":
   "integrity" "sha512-cjsQbOrXIDE4P8nNb3FQRCCmJJ/utnFKEz2NX209f7KOHPoX18gF7gBzBbLLsj2/je4KrgiwLLGjf0lm9rtTBA=="
   "resolved" "https://registry.npmjs.org/passport-oauth2/-/passport-oauth2-1.8.0.tgz"
   "version" "1.8.0"
@@ -3143,6 +3162,11 @@
   dependencies:
     "forwarded" "0.2.0"
     "ipaddr.js" "1.9.1"
+
+"proxy-from-env@^1.1.0":
+  "integrity" "sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg=="
+  "resolved" "https://registry.npmjs.org/proxy-from-env/-/proxy-from-env-1.1.0.tgz"
+  "version" "1.1.0"
 
 "pug-attrs@^2.0.2":
   "integrity" "sha512-TaZ4Z2TWUPDJcV3wjU3RtUXMrd3kM4Wzjbe3EWnSsZPsJ3LDI0F3yCnf2/W7PPFF+edUFQ0HgDL1IoxSz5K8EQ=="

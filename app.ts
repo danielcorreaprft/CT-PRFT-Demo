@@ -8,8 +8,11 @@ import fs from 'fs';
 import path from 'path';
 import session from 'express-session';
 import passport from 'passport'
+import {AuthenticationProvider, User} from "./types/Auth";
+
 const GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
 const FacebookStrategy = require( 'passport-facebook' ).Strategy;
+const OAuth2Strategy = require( 'passport-oauth2' ).Strategy;
 
 const  app = express();
 
@@ -49,7 +52,15 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 let authUser = (req:Request, accessToken, refreshToken, profile, done) => {
-  return done(null, profile);
+  console.log("access:" + accessToken)
+  console.log(refreshToken)
+  const authProvider : AuthenticationProvider = accessToken ? AuthenticationProvider.GOOGLE : AuthenticationProvider.FACEBOOK;
+  const user : User = {
+    profile: profile,
+    accessToken: accessToken ? {access_token: accessToken} : refreshToken,
+    authenticationProvider: authProvider
+  };
+  return done(null, user);
 }
 
 passport.use(new GoogleStrategy({
@@ -67,7 +78,17 @@ passport.use(new FacebookStrategy({
   enableProof: true
 }, authUser));
 
+passport.use(new OAuth2Strategy({
+      authorizationURL: 'https://api.us-central1.gcp.commercetools.com/'+process.env.CTP_PROJECT_KEY+'/login',
+      tokenURL: 'https://auth.us-central1.gcp.commercetools.com/oauth/token',
+      clientID: process.env.CTP_CLIENT_ID,
+      clientSecret: process.env.CTP_CLIENT_SECRET,
+      callbackURL: "http://localhost:8085/auth/credentials/callback"
+    }, authUser
+));
+
 passport.serializeUser( (user, done) => {
+  console.log(user)
   done(null, user)
 } )
 

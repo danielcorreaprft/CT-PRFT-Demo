@@ -1,6 +1,7 @@
 import {
   createAuthForPasswordFlow,
   createAuthForAnonymousSessionFlow,
+    createAuthWithExistingToken
 } from '@commercetools/sdk-client-v2'
 import fetch from 'node-fetch'
 
