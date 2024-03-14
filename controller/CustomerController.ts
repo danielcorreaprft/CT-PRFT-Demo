@@ -39,8 +39,8 @@ class CustomerController {
         }
     }
 
-    async processLogin(req: Request, res: Response) {
-        const options = getOptions(req.headers)
+    async processLogin(req: AuthRequest, res: Response) {
+        const options = getOptions(req.headers, req.body)
         const customer: CustomerSignin = req.body
         const data = await new CustomerRepository(options).signInCustomer(customer)
         ResponseHandler.handleResponse(res, data)
