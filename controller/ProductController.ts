@@ -18,28 +18,28 @@ class ProductController {
   }
 
   async getProductByKey(req: Request, res: Response) {
-    const options = new Options().getOptions(req)
+    const options = await new Options().getOptions(req)
     const data = await new ProductRepository(options).getProductByKey(req.params.key)
 
     ResponseHandler.handleResponse(req,res, data)
   }
 
   async getProductById(req: Request, res: Response) {
-    const options = new Options().getOptions(req)
+    const options = await new Options().getOptions(req)
     const data = await new ProductRepository(options).getProductById(req.params.ID)
 
     ResponseHandler.handleResponse(req,res, data)
   }
 
   async getVariantByIdForProduct(req: Request, res: Response) {
-    const options = new Options().getOptions(req)
+    const options = await new Options().getOptions(req)
     const data = await new ProductRepository(options).getVariantForProduct(req.params.variantId)
 
     ResponseHandler.handleResponse(req,res, data)
   }
 
   async getFreeTextSearchResult(req: Request, res: Response) {
-    const options = new Options().getOptions(req)
+    const options = await new Options().getOptions(req)
     const data = await new ProductRepository(options).getFreeTextSearchResult(<string>req.query.textSearch)
 
     ResponseHandler.handleResponse(req,res, data)

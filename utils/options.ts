@@ -2,7 +2,7 @@ import {
   createAuthWithExistingToken,
 } from '@commercetools/sdk-client-v2'
 import fetch from 'node-fetch'
-import AuthRequest from "../types/Auth";
+import AuthRequest, {AuthenticationProvider} from "../types/Auth";
 import SdkAuth from '@commercetools/sdk-auth'
 
 export class Options{
@@ -26,8 +26,11 @@ export class Options{
 
     let authMiddleware
 
-    if(!!authRequest.accessToken){
-      authMiddleware = createAuthWithExistingToken(`Bearer ${authRequest.accessToken.access_token}`, {force:false})
+    if(!!authRequest.headers.accesstoken && AuthenticationProvider.COMMERCE_TOOLS == authRequest.headers.tokenprovider){
+      authRequest.accessToken={
+        access_token : <string>authRequest.headers.accesstoken
+      }
+      authMiddleware = createAuthWithExistingToken(`Bearer ${authRequest.headers.accesstoken}`, {force:false})
     }
     else {
       let token : any;

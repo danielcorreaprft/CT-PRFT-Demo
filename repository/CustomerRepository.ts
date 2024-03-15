@@ -8,6 +8,7 @@ interface ICustomerRepository {
     registerCustomer(customer: CustomerDraft): any
     checkCustomerExist(email:string):any
     signInCustomer(customer: CustomerSignin):any
+    getCustomerById(customerId: string):any
 }
 
 class Customer implements ICustomerRepository {
@@ -54,6 +55,20 @@ class Customer implements ICustomerRepository {
                 .post({
                     body: customer
                 }).execute()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async getCustomerById(customerId: string) {
+        try {
+            const customer =  await this.apiRoot
+                .withProjectKey({projectKey: this.projectKey})
+                .customers()
+                .withId({ID:customerId})
+                .get()
+                .execute()
+            return customer;
         } catch (error) {
             return error
         }

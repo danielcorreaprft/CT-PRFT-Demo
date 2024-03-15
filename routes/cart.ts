@@ -12,6 +12,13 @@ const { createCart, updateCart, getCartById } = cartController
  * /carts:
  *   post:
  *     summary: Creates a cart for anonymous user
+ *     parameters:
+ *       - in: header
+ *         name: AccessToken
+ *         description: AccessToken
+ *       - in: header
+ *         name: TokenProvider
+ *         description: TokenProvider
  *     requestBody:
  *       required: true
  *       content:

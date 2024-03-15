@@ -11,7 +11,7 @@ import { Options} from '../utils/options'
 class CategoryController {
 
     async getProductsForCategory(req: Request, res: Response) {
-        const options = new Options().getOptions(req)
+        const options = await new Options().getOptions(req)
         const data = await new CategoryRepository(options).getProductsForCategory(req.params.id)
 
         ResponseHandler.handleResponse(req,res, data)

@@ -24,9 +24,9 @@ export interface AccessToken {
 }
 
 export interface IntrospectResponse {
-    email: string;
-    expires_in: number;
-    valid: boolean;
+    email?: string;
+    expires_in?: number;
+    valid?: boolean;
 }
 
 interface Email {

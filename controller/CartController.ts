@@ -3,6 +3,8 @@ import { Request, Response } from 'express'
 import { CartRepository } from '../repository'
 import { Options} from '../utils/options'
 import {CartDraft, CartUpdate} from "@commercetools/platform-sdk";
+import AuthRequest, {IntrospectResponse} from "../types/Auth";
+import {introspectToken} from "../utils/Introspect";
 
 /**
  * @description CartController
@@ -10,16 +12,21 @@ import {CartDraft, CartUpdate} from "@commercetools/platform-sdk";
  */
 class CartController {
 
-    async createCart(req: Request, res: Response) {
-        const options = new Options().getOptions(req)
-        const cartDraft: CartDraft = req.body
-        const data = await new CartRepository(options).createCart(cartDraft)
+    async createCart(req: AuthRequest, res: Response) {
+        const introspect : IntrospectResponse = await introspectToken(req);
+        if (introspect.valid && introspect.expires_in > 0) {
+            const options = await new Options().getOptions(req)
+            const cartDraft: CartDraft = req.body
+            const data = await new CartRepository(options).createCart(cartDraft)
 
-        ResponseHandler.handleResponse(req,res, data)
+            ResponseHandler.handleResponse(req, res, data)
+        }else {
+            ResponseHandler.handleUnauthorizedResponse(res);
+        }
     }
 
     async updateCart(req: Request, res: Response) {
-        const options = new Options().getOptions(req)
+        const options = await new Options().getOptions(req)
         const cartUpdate: CartUpdate = req.body
         const data = await new CartRepository(options).updateCart(req.params.cartId, cartUpdate)
 
@@ -27,7 +34,7 @@ class CartController {
     }
 
     async getCartById(req: Request, res: Response) {
-        const options = new Options().getOptions(req)
+        const options = await new Options().getOptions(req)
         const data = await new CartRepository(options).getCartById(req.params.cartId)
 
         ResponseHandler.handleResponse(req,res, data)

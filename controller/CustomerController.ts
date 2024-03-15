@@ -10,17 +10,17 @@ import {introspectToken} from "../utils/Introspect"
 
 class CustomerController {
 
-    async createCustomer(req: Request, res: Response) {
-        const options = new Options().getOptions(req)
+    async createCustomer(req: AuthRequest, res: Response) {
+        const options = await new Options().getOptions(req)
         const customerDraft: CustomerDraft = req.body
         const data = await new CustomerRepository(options).registerCustomer(customerDraft)
         ResponseHandler.handleResponse(req,res, data)
     }
 
     async processExternalAuth(req: AuthRequest, res: Response) {
-        const introspect : IntrospectResponse = await introspectToken(req.user.accessToken, req.user.authenticationProvider);
+        const introspect : IntrospectResponse = await introspectToken(req);
         if (introspect.valid && introspect.expires_in > 0){
-            const options = new Options().getOptions(req)
+            const options = await new Options().getOptions(req)
             const customerRepository : CustomerRepository = new CustomerRepository(options);
             const email : string = req.user.profile.emails[0].value;
             let data = await customerRepository.checkCustomerExist(email)
@@ -33,6 +33,7 @@ class CustomerController {
                 };
                 data = await customerRepository.registerCustomer(customerDraft);
             }
+            req.accessToken = req.user.accessToken;
             ResponseHandler.handleResponse(req,res, data);
         }else {
             ResponseHandler.handleUnauthorizedResponse(res);
@@ -43,7 +44,7 @@ class CustomerController {
         const options = await new Options().getOptions(req, req.body)
         const customer: CustomerSignin = req.body
         const data = await new CustomerRepository(options).signInCustomer(customer)
-        ResponseHandler.handleResponse(req,res, data)
+        ResponseHandler.handleResponse(req, res, data)
     }
 }
 

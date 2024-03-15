@@ -74,7 +74,7 @@ class ResponseHandler {
    * @return response JSON
    */
   static handleResponse(req:AuthRequest, res, data){
-    if (data.statusCode == 200) {
+    if (data.statusCode == 200 || data.statusCode == 201) {
       if(!!req.accessToken){
         data.body.access_token=req.accessToken.access_token
       }
