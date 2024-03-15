@@ -35,13 +35,12 @@ class Client {
   }
 
   getClientFromOption(options) {
-    const { projectKey, authMiddleware, tokenMiddleware, httpMiddlewareOptions, credentials } =
+    const { projectKey, authMiddleware, httpMiddlewareOptions, credentials } =
       options
     if (credentials) {
       return userClientBuilder
         .withProjectKey(projectKey)
         .withMiddleware(authMiddleware)
-        .withMiddleware(tokenMiddleware)
         .withHttpMiddleware(httpMiddlewareOptions)
         .withLoggerMiddleware()
         .build()

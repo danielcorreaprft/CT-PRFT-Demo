@@ -1,7 +1,7 @@
 import ResponseHandler from '../utils/Response'
 import { Request, Response } from 'express'
 import { CategoryRepository } from '../repository'
-import { getOptions } from '../utils/options'
+import { Options} from '../utils/options'
 
 /**
  * @description CategoryController
@@ -11,10 +11,10 @@ import { getOptions } from '../utils/options'
 class CategoryController {
 
     async getProductsForCategory(req: Request, res: Response) {
-        const options = getOptions(req.headers)
+        const options = new Options().getOptions(req)
         const data = await new CategoryRepository(options).getProductsForCategory(req.params.id)
 
-        ResponseHandler.handleResponse(res, data)
+        ResponseHandler.handleResponse(req,res, data)
     }
 }
 

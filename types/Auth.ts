@@ -19,8 +19,8 @@ export interface User {
 
 export interface AccessToken {
     access_token: string;
-    token_type: string;
-    expires_in: number;
+    token_type?: string;
+    expires_in?: number;
 }
 
 export interface IntrospectResponse {
@@ -34,6 +34,7 @@ interface Email {
 }
 interface AuthRequest extends Request{
     user?: User;
+    accessToken?: AccessToken;
 }
 
 export enum AuthenticationProvider {

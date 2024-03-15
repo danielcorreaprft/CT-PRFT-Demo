@@ -1,3 +1,5 @@
+import AuthRequest from "../types/Auth";
+
 interface Response {
   status: string
   message?: string
@@ -71,8 +73,11 @@ class ResponseHandler {
    *
    * @return response JSON
    */
-  static handleResponse(res, data){
+  static handleResponse(req:AuthRequest, res, data){
     if (data.statusCode == 200) {
+      if(!!req.accessToken){
+        data.body.access_token=req.accessToken.access_token
+      }
       return this.successResponse(
           res,
           data.statusCode || data.body.statusCode,
