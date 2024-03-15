@@ -1,11 +1,18 @@
-import  { Router } from 'express'
+import { Router } from 'express'
 import { CustomerController } from '../controller'
 import passport from 'passport'
+import EmailService from '../services/EmailService';
 
-const customerController = new CustomerController()
+const customerController = new CustomerController(new EmailService())
 
 const router = Router()
-const { createCustomer, processExternalAuth, processLogin } = customerController
+const {
+    createCustomer,
+    processExternalAuth,
+    processLogin,
+    requestForgottenPasswordToken,
+    resetPasswordWithToken
+} = customerController
 
 /**
  * TODO: fill properties
@@ -33,7 +40,7 @@ router.get('/auth/google', passport.authenticate('google', {
     scope: ['email', 'profile']
 }));
 
-router.get('/auth/facebook', passport.authenticate('facebook',{
+router.get('/auth/facebook', passport.authenticate('facebook', {
     scope: ['email']
 }));
 
@@ -61,7 +68,7 @@ router.get('/auth/facebook/callback', passport.authenticate('facebook', {
  *             $ref: '#/components/schemas/CustomerSignin'
  *     responses:
  *       200:
- *         description: A created cart.
+ *         description: Successful login.
  *         content:
  *           application/json:
  *             schema:
@@ -70,4 +77,9 @@ router.get('/auth/facebook/callback', passport.authenticate('facebook', {
 router.post('/login', processLogin.bind(customerController));
 
 router.get('/process-external-login', processExternalAuth.bind(customerController));
+
+router.post('/request-forgotten-password-token', requestForgottenPasswordToken.bind(customerController))
+
+router.post('/reset-password', resetPasswordWithToken.bind(customerController))
+
 export default router
