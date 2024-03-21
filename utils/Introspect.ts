@@ -1,5 +1,5 @@
 import axios from "axios";
-import AuthRequest, {AuthenticationProvider, IntrospectResponse} from "../types/Auth";
+import AuthRequest, {AuthenticationProvider, IntrospectResponse, CustomerItemDraft, CustomerSimpleDraft} from "../types/Auth";
 import {Options} from "./options";
 import {CustomerRepository} from "../repository";
 import SdkAuth from '@commercetools/sdk-auth';
@@ -64,14 +64,50 @@ async function mapIntrospectionResponse(response : any, args : any, request:Auth
             introspectResponse.valid = undefined != response.data.email;
             break
         case AuthenticationProvider.COMMERCE_TOOLS:
-            const customerId : string = response.scope.split(' ').filter(value => value.startsWith("customer_id"))[0].split(":")[1];
-            const options = await new Options().getOptions(request);
-            const data = await new CustomerRepository(options).getCustomerById(customerId);
+            if(!!response.scope) {
+                const customerId: string = response.scope.split(' ').filter(value => value.startsWith("customer_id"))[0].split(":")[1];
+                const options = await new Options().getOptions(request);
+                const data = await new CustomerRepository(options).getCustomerById(customerId);
 
-            introspectResponse.email = data.body.email;
-            introspectResponse.expires_in = response.exp - Date.now();
-            introspectResponse.valid = response.active;
+                introspectResponse.email = data.body.email;
+                introspectResponse.customerId = customerId;
+                introspectResponse.expires_in = response.exp - Date.now();
+                introspectResponse.valid = response.active;
+            }
             break
     }
     return introspectResponse;
+}
+
+export async function validateCustomer(introspectResponse:IntrospectResponse, item:CustomerItemDraft, request:AuthRequest) : Promise<boolean> {
+    let itemValidation = await abstractValidate(introspectResponse,
+        {customerEmail: item.customerEmail, customerId: item.customerId}, request);
+    if (!!itemValidation){
+        return itemValidation;
+    }
+    if(!!item.itemId) {
+        const options = await new Options().getOptions(request);
+        const data = await new CustomerRepository(options).getCustomerInfoForTypeAndId(item);
+        itemValidation = await abstractValidate(introspectResponse,
+            {customerEmail: data.item.customerEmail, customerId: data.item.customerId}, request);
+    }
+
+    return !!itemValidation ? itemValidation : true;
+}
+
+async function abstractValidate(introspectResponse:IntrospectResponse, customerDraft:CustomerSimpleDraft, request:AuthRequest): Promise<boolean>{
+    if (!!customerDraft.customerEmail){
+        return introspectResponse.email == customerDraft.customerEmail;
+    }
+    const options = await new Options().getOptions(request);
+    if (!!customerDraft.customerId){
+        if(!!introspectResponse.customerId){
+            return introspectResponse.customerId == customerDraft.customerId;
+        }
+        const customer = await new CustomerRepository(options).getCustomerEmailById(customerDraft.customerId);
+        if (!!customer.email){
+            return introspectResponse.email == customer.email;
+        }
+    }
+    return undefined;
 }

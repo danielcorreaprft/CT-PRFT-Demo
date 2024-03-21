@@ -1,5 +1,6 @@
 import {ApiRoot, CustomerDraft, CustomerSignin} from '@commercetools/platform-sdk'
 import {createClient} from "../utils/Client";
+import {CustomerItemDraft} from "../types/Auth";
 
 interface ICustomerRepository {
     apiRoot: ApiRoot
@@ -9,6 +10,8 @@ interface ICustomerRepository {
     checkCustomerExist(email:string):any
     signInCustomer(customer: CustomerSignin):any
     getCustomerById(customerId: string):any
+    getCustomerEmailById(customerId: string):any
+    getCustomerInfoForTypeAndId(itemDraft: CustomerItemDraft):any
 }
 
 class Customer implements ICustomerRepository {
@@ -62,13 +65,52 @@ class Customer implements ICustomerRepository {
 
     async getCustomerById(customerId: string) {
         try {
-            const customer =  await this.apiRoot
+            return await this.apiRoot
                 .withProjectKey({projectKey: this.projectKey})
                 .customers()
                 .withId({ID:customerId})
                 .get()
                 .execute()
-            return customer;
+        } catch (error) {
+            return error
+        }
+    }
+
+    async getCustomerEmailById(customerId: string) {
+        try {
+            return await this.apiRoot
+                .withProjectKey({projectKey: this.projectKey})
+                .graphql()
+                .post({
+                    body:{
+                        query: "query ($customerId: String!){customer(id:$customerId){id, email}}",
+                        variables: {"customerId" : customerId}
+                    }
+                })
+                .execute()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async getCustomerInfoForTypeAndId(itemDraft: CustomerItemDraft) {
+        try {
+            return await this.apiRoot
+                .withProjectKey({projectKey: this.projectKey})
+                .graphql()
+                .post({
+                    body:{
+                        query: `query ($itemId: String!){
+                                    item: ${itemDraft.itemType}(id:$itemId){
+                                        id,
+                                        customerId: ${itemDraft.customerIdField},
+                                        customerEmail: ${itemDraft.customerEmailField}
+                                    }
+                                }`,
+                        variables: {"$itemId" : itemDraft.itemId}
+                    }
+                })
+                .execute()
         } catch (error) {
             return error
         }
