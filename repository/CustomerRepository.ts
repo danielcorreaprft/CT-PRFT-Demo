@@ -95,7 +95,7 @@ class Customer implements ICustomerRepository {
 
     async getCustomerInfoForTypeAndId(itemDraft: CustomerItemDraft) {
         try {
-            return await this.apiRoot
+            const item = await this.apiRoot
                 .withProjectKey({projectKey: this.projectKey})
                 .graphql()
                 .post({
@@ -107,10 +107,11 @@ class Customer implements ICustomerRepository {
                                         customerEmail: ${itemDraft.customerEmailField}
                                     }
                                 }`,
-                        variables: {"$itemId" : itemDraft.itemId}
+                        variables: {"itemId" : itemDraft.itemId}
                     }
                 })
-                .execute()
+                .execute();
+            return item.body.data;
         } catch (error) {
             return error
         }

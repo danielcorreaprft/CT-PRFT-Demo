@@ -39,16 +39,29 @@ class CartController {
                 const data = await new CartRepository(options).updateCart(req.params.cartId, cartUpdate)
 
                 ResponseHandler.handleResponse(req, res, data)
+                return;
             }
         }
         ResponseHandler.handleUnauthorizedResponse(res);
     }
 
     async getCartById(req: Request, res: Response) {
-        const options = await new Options().getOptions(req)
-        const data = await new CartRepository(options).getCartById(req.params.cartId)
+        const introspect : IntrospectResponse = await introspectToken(req);
+        if (introspect.valid && introspect.expires_in > 0) {
+            const itemDraft: CustomerItemDraft =
+                new CustomerItemDraftBuilder("cart", "customerEmail", "customerId")
+                    .withItemId(req.params.cartId)
+                    .build();
+            const validOperation: boolean = await validateCustomer(introspect, itemDraft, req);
+            if (validOperation) {
+                const options = await new Options().getOptions(req)
+                const data = await new CartRepository(options).getCartById(req.params.cartId)
 
-        ResponseHandler.handleResponse(req,res, data)
+                ResponseHandler.handleResponse(req, res, data)
+                return;
+            }
+        }
+        ResponseHandler.handleUnauthorizedResponse(res);
     }
 }
 

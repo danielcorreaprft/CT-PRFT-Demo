@@ -45,6 +45,12 @@ router.post('/carts', createCart.bind(cartController))
  *      - in: path
  *        name: cartId
  *        description: id of the cart
+ *      - in: header
+ *        name: AccessToken
+ *        description: AccessToken
+ *      - in: header
+ *        name: TokenProvider
+ *        description: TokenProvider
  *     requestBody:
  *       required: true
  *       description: In action, use "addLineItem" for adding and "removeLineItem" for removing. Specify SKU when adding, specify lineItemId when removing
@@ -72,6 +78,12 @@ router.post('/carts/:cartId', updateCart.bind(cartController))
  *      - in: path
  *        name: cartId
  *        description: id of the cart
+ *      - in: header
+ *        name: AccessToken
+ *        description: AccessToken
+ *      - in: header
+ *        name: TokenProvider
+ *        description: TokenProvider
  *     responses:
  *       200:
  *         description: Cart with given ID.

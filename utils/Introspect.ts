@@ -82,17 +82,18 @@ async function mapIntrospectionResponse(response : any, args : any, request:Auth
 export async function validateCustomer(introspectResponse:IntrospectResponse, item:CustomerItemDraft, request:AuthRequest) : Promise<boolean> {
     let itemValidation = await abstractValidate(introspectResponse,
         {customerEmail: item.customerEmail, customerId: item.customerId}, request);
-    if (!!itemValidation){
+    if (itemValidation != undefined){
         return itemValidation;
     }
     if(!!item.itemId) {
         const options = await new Options().getOptions(request);
         const data = await new CustomerRepository(options).getCustomerInfoForTypeAndId(item);
+        console.log(data);
         itemValidation = await abstractValidate(introspectResponse,
-            {customerEmail: data.item.customerEmail, customerId: data.item.customerId}, request);
+                {customerEmail: data.item.customerEmail, customerId: data.item.customerId}, request);
     }
 
-    return !!itemValidation ? itemValidation : true;
+    return itemValidation != undefined ? itemValidation : true;
 }
 
 async function abstractValidate(introspectResponse:IntrospectResponse, customerDraft:CustomerSimpleDraft, request:AuthRequest): Promise<boolean>{
