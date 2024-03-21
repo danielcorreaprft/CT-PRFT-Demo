@@ -93,7 +93,7 @@ export async function validateCustomer(introspectResponse:IntrospectResponse, it
                 {customerEmail: data.item.customerEmail, customerId: data.item.customerId}, request);
     }
 
-    return itemValidation != undefined ? itemValidation : true;
+    return itemValidation ?? true;
 }
 
 async function abstractValidate(introspectResponse:IntrospectResponse, customerDraft:CustomerSimpleDraft, request:AuthRequest): Promise<boolean>{
