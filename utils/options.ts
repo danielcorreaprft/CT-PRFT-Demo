@@ -1,54 +1,68 @@
 import {
-  createAuthForPasswordFlow,
-  createAuthForAnonymousSessionFlow,
+  createAuthWithExistingToken,
 } from '@commercetools/sdk-client-v2'
 import fetch from 'node-fetch'
+import AuthRequest, {AuthenticationProvider} from "../types/Auth";
+import SdkAuth from '@commercetools/sdk-auth'
 
-let _credentials = null
+export class Options{
 
-export function getOptions(
-  headers = null,
-  credentials?: { username: string; password: string }
-) {
-  let authMiddleware
-  let { destroy } = headers
+  async getOptions(
+      authRequest:AuthRequest,
+      credentials?: { email: string; password: string },
+  ) {
 
-  if (destroy == 'true') _credentials = null
-  if (_credentials || credentials) {
-    if (credentials) _credentials = credentials
-    authMiddleware = createAuthForPasswordFlow({
+    const authClient = new SdkAuth({
       host: process.env.CTP_AUTH_URL,
       projectKey: process.env.CTP_PROJECT_KEY,
+      disableRefreshToken: false,
       credentials: {
-        clientId: process.env.CTP_CLIENT_ID || '',
-        clientSecret: process.env.CTP_CLIENT_SECRET || '',
-        user: {
-          ..._credentials,
-        },
+        clientId: process.env.CTP_CLIENT_ID,
+        clientSecret: process.env.CTP_CLIENT_SECRET,
       },
       scopes: [`manage_project:${process.env.CTP_PROJECT_KEY}`],
       fetch,
     })
-  } else {
-    authMiddleware = createAuthForAnonymousSessionFlow({
-      host: process.env.CTP_AUTH_URL,
-      projectKey: process.env.CTP_PROJECT_KEY || '',
-      credentials: {
-        clientId: process.env.CTP_CLIENT_ID || '',
-        clientSecret: process.env.CTP_CLIENT_SECRET || '',
+
+    let authMiddleware
+
+    if(!!authRequest.headers.accesstoken && AuthenticationProvider.COMMERCE_TOOLS == authRequest.headers.tokenprovider){
+      authRequest.accessToken={
+        access_token : <string>authRequest.headers.accesstoken
+      }
+      authMiddleware = createAuthWithExistingToken(`Bearer ${authRequest.headers.accesstoken}`, {force:false})
+    }
+    else {
+      let token : any;
+
+      if(!!credentials){
+        token = await authClient.customerPasswordFlow({
+          username: credentials.email,
+          password: credentials.password
+        })
+      }else{
+        token = await authClient.anonymousFlow()
+      }
+
+      console.log(token)
+      authRequest.accessToken={
+        access_token : token.access_token
+      }
+      authMiddleware = createAuthWithExistingToken(`Bearer ${authRequest.accessToken.access_token}`, {force:false})
+
+    }
+
+
+    return {
+      authMiddleware,
+      projectKey: process.env.CTP_PROJECT_KEY,
+      credentials: credentials,
+      httpMiddlewareOptions: {
+        host: process.env.CTP_API_URL,
+        fetch
       },
-      scopes: [`manage_project:${process.env.CTP_PROJECT_KEY}`],
-      fetch,
-    })
+    }
   }
 
-  return {
-    authMiddleware,
-    projectKey: process.env.CTP_PROJECT_KEY,
-    credentials: !!_credentials,
-    httpMiddlewareOptions: {
-      host: process.env.CTP_API_URL,
-      fetch,
-    },
-  }
+
 }

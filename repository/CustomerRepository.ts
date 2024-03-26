@@ -6,19 +6,19 @@ import {
     CustomerSignin
 } from '@commercetools/platform-sdk'
 import { createClient } from "../utils/Client";
+import {CustomerItemDraft} from "../types/Auth";
 
 interface ICustomerRepository {
     apiRoot: ApiRoot
     projectKey: string
 
     registerCustomer(customer: CustomerDraft): any
-
-    checkCustomerExist(email: string): any
-
-    signInCustomer(customer: CustomerSignin): any
-
+    checkCustomerExist(email:string):any
+    signInCustomer(customer: CustomerSignin):any
+    getCustomerById(customerId: string):any
+    getCustomerEmailById(customerId: string):any
+    getCustomerInfoForTypeAndId(itemDraft: CustomerItemDraft):any
     getResetCustomerPassword(passwordResetToken: CustomerCreatePasswordResetToken): any
-
     resetCustomerPasswordWithToken(customerResetPassword: CustomerResetPassword): any
 }
 
@@ -66,6 +66,60 @@ class Customer implements ICustomerRepository {
                 .post({
                     body: customer
                 }).execute()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async getCustomerById(customerId: string) {
+        try {
+            return await this.apiRoot
+                .withProjectKey({projectKey: this.projectKey})
+                .customers()
+                .withId({ID:customerId})
+                .get()
+                .execute()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async getCustomerEmailById(customerId: string) {
+        try {
+            return await this.apiRoot
+                .withProjectKey({projectKey: this.projectKey})
+                .graphql()
+                .post({
+                    body:{
+                        query: "query ($customerId: String!){customer(id:$customerId){id, email}}",
+                        variables: {"customerId" : customerId}
+                    }
+                })
+                .execute()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async getCustomerInfoForTypeAndId(itemDraft: CustomerItemDraft) {
+        try {
+            const item = await this.apiRoot
+                .withProjectKey({projectKey: this.projectKey})
+                .graphql()
+                .post({
+                    body:{
+                        query: `query ($itemId: String!){
+                                    item: ${itemDraft.itemType}(id:$itemId){
+                                        id,
+                                        customerId: ${itemDraft.customerIdField},
+                                        customerEmail: ${itemDraft.customerEmailField}
+                                    }
+                                }`,
+                        variables: {"itemId" : itemDraft.itemId}
+                    }
+                })
+                .execute();
+            return item.body.data;
         } catch (error) {
             return error
         }

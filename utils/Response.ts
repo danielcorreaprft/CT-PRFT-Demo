@@ -1,3 +1,5 @@
+import AuthRequest from "../types/Auth";
+
 interface Response {
   status: string
   message?: string
@@ -71,8 +73,11 @@ class ResponseHandler {
    *
    * @return response JSON
    */
-  static handleResponse(res, data){
-    if (data.statusCode == 200) {
+  static handleResponse(req:AuthRequest, res, data){
+    if (data.statusCode == 200 || data.statusCode == 201) {
+      if(!!req.accessToken){
+        data.body.access_token=req.accessToken.access_token
+      }
       return this.successResponse(
           res,
           data.statusCode || data.body.statusCode,
@@ -81,6 +86,19 @@ class ResponseHandler {
       )
     }
     return this.handleErrorResponse(res, data);
+  }
+
+  /**
+   *
+   * @description method to handle unauthorized errors
+   *
+   * @param res Object
+   * @param data Object | Array
+   *
+   * @return response JSON
+   */
+  static handleUnauthorizedResponse(res) {
+    return this.handleErrorResponse(res, {statusCode: 401, message: "Invalid or expired access token"})
   }
 
   /**
