@@ -16,6 +16,10 @@ interface ICustomerRepository {
     checkCustomerExist(email: string): any
 
     signInCustomer(customer: CustomerSignin): any
+
+    getResetCustomerPassword(passwordResetToken: CustomerCreatePasswordResetToken): any
+
+    resetCustomerPasswordWithToken(customerResetPassword: CustomerResetPassword): any
 }
 
 class Customer implements ICustomerRepository {
