@@ -54,20 +54,23 @@ class CustomerController {
         const options = getOptions(req.headers)
         const requestTokenBody: CustomerCreatePasswordResetToken = req.body
         const data = await new CustomerRepository(options).getResetCustomerPassword(requestTokenBody)
-        ResponseHandler.handleResponse(res, data)
+        ResponseHandler.successResponse(res, 200, "success", {})
 
-        //OPTIONAL - Send email to the user from here
-        await this.emailService.sendResetPasswordEmail(req.body.email, data.body.value)
+        if (res.statusCode === 200) {
+            await this.emailService.sendResetPasswordEmail(req.body.email, data.body.value)
+        }
     }
 
     async resetPasswordWithToken(req: Request, res: Response) {
         const options = getOptions(req.headers)
         const resetPassword: CustomerResetPassword = req.body
         const data = await new CustomerRepository(options).resetCustomerPasswordWithToken(resetPassword)
-        ResponseHandler.handleResponse(res, data)
+        ResponseHandler.successResponse(res, 200, "success", {})
 
-        //OPTIONAL - Send email to the user from here
-        await this.emailService.sendSuccessResetPasswordEmail(data.body.email)
+        if (res.statusCode === 200) {
+            //OPTIONAL - Send email to the user from here
+            await this.emailService.sendSuccessResetPasswordEmail(data.body.email)
+        }
     }
 }
 

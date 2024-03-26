@@ -4,7 +4,7 @@ import { CartController } from '../controller'
 const cartController = new CartController()
 
 const router = Router()
-const { createCart, updateCart, getCartById } = cartController
+const { createCart, updateCart, getCartById, setShippingAddress, setShippingMethod } = cartController
 
 /**
  * TODO: fill properties
@@ -54,6 +54,10 @@ router.post('/carts', createCart.bind(cartController))
  *              $ref: '#/components/schemas/Cart'
  */
 router.post('/carts/:cartId', updateCart.bind(cartController))
+
+router.post('/carts/:cartId/setShippingAddress', setShippingAddress.bind(cartController))
+
+router.post('/carts/:cartId/setShippingMethod', setShippingMethod.bind(cartController))
 
 /**
  * TODO: fill properties
