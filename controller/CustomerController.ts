@@ -1,14 +1,26 @@
 import ResponseHandler from '../utils/Response'
 import { Request, Response } from 'express'
 import { CustomerRepository } from '../repository'
-import { Options} from '../utils/options'
-import {CustomerDraft, CustomerSignin} from "@commercetools/platform-sdk";
+import { Options } from '../utils/options'
+import {
+    CustomerCreatePasswordResetToken,
+    CustomerDraft,
+    CustomerResetPassword,
+    CustomerSignin
+} from "@commercetools/platform-sdk";
 import AuthRequest, {IntrospectResponse} from "../types/Auth";
 import {AuthenticationMode, ExternalCustomerDraft} from "../types/ExternalCustomerDraft";
 import {introspectToken} from "../utils/Introspect"
+import EmailService from '../services/EmailService';
 
 
 class CustomerController {
+
+    emailService: EmailService
+
+    constructor(emailService: EmailService) {
+        this.emailService = emailService
+    }
 
     async createCustomer(req: AuthRequest, res: Response) {
         const options = await new Options().getOptions(req)
@@ -45,6 +57,29 @@ class CustomerController {
         const customer: CustomerSignin = req.body
         const data = await new CustomerRepository(options).signInCustomer(customer)
         ResponseHandler.handleResponse(req, res, data)
+    }
+
+    async requestForgottenPasswordToken(req: Request, res: Response) {
+        const options = await new Options().getOptions(req, req.body)
+        const requestTokenBody: CustomerCreatePasswordResetToken = req.body
+        const data = await new CustomerRepository(options).getResetCustomerPassword(requestTokenBody)
+        ResponseHandler.successResponse(res, 200, "success", {})
+
+        if (res.statusCode === 200) {
+            await this.emailService.sendResetPasswordEmail(req.body.email, data.body.value)
+        }
+    }
+
+    async resetPasswordWithToken(req: Request, res: Response) {
+        const options = await new Options().getOptions(req, req.body)
+        const resetPassword: CustomerResetPassword = req.body
+        const data = await new CustomerRepository(options).resetCustomerPasswordWithToken(resetPassword)
+        ResponseHandler.successResponse(res, 200, "success", {})
+
+        if (res.statusCode === 200) {
+            //OPTIONAL - Send email to the user from here
+            await this.emailService.sendSuccessResetPasswordEmail(data.body.email)
+        }
     }
 }
 

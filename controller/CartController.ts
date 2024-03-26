@@ -25,6 +25,13 @@ class CartController {
         }
     }
 
+    /**
+     * General method to update carts. Use Cart Update Actions
+     * @see https://docs.commercetools.com/api/projects/carts#update-actions
+     *
+     * @param req
+     * @param res
+     */
     async updateCart(req: Request, res: Response) {
         const introspect : IntrospectResponse = await introspectToken(req);
         if (introspect.valid && introspect.expires_in > 0) {
@@ -43,6 +50,22 @@ class CartController {
             }
         }
         ResponseHandler.handleUnauthorizedResponse(res);
+    }
+
+    async setShippingMethod(req: Request, res: Response) {
+        const options = await new Options().getOptions(req)
+        const cartUpdate: CartUpdate = req.body
+        const data = await new CartRepository(options).updateCart(req.params.cartId, cartUpdate)
+
+        ResponseHandler.handleResponse(req, res, data)
+    }
+
+    async setShippingAddress(req: Request, res: Response) {
+        const options = await new Options().getOptions(req)
+        const cartUpdate: CartUpdate = req.body
+        const data = await new CartRepository(options).updateCart(req.params.cartId, cartUpdate)
+
+        ResponseHandler.handleResponse(req, res, data)
     }
 
     async getCartById(req: Request, res: Response) {

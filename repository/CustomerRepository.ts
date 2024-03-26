@@ -1,5 +1,11 @@
-import {ApiRoot, CustomerDraft, CustomerSignin} from '@commercetools/platform-sdk'
-import {createClient} from "../utils/Client";
+import {
+    ApiRoot,
+    CustomerCreatePasswordResetToken,
+    CustomerDraft,
+    CustomerResetPassword,
+    CustomerSignin
+} from '@commercetools/platform-sdk'
+import { createClient } from "../utils/Client";
 import {CustomerItemDraft} from "../types/Auth";
 
 interface ICustomerRepository {
@@ -12,6 +18,8 @@ interface ICustomerRepository {
     getCustomerById(customerId: string):any
     getCustomerEmailById(customerId: string):any
     getCustomerInfoForTypeAndId(itemDraft: CustomerItemDraft):any
+    getResetCustomerPassword(passwordResetToken: CustomerCreatePasswordResetToken): any
+    resetCustomerPasswordWithToken(customerResetPassword: CustomerResetPassword): any
 }
 
 class Customer implements ICustomerRepository {
@@ -42,7 +50,7 @@ class Customer implements ICustomerRepository {
                 .customers()
                 .get({
                     queryArgs: {
-                        where: "email=\""+email+"\""
+                        where: "email=\"" + email + "\""
                     }
                 }).execute()
         } catch (error) {
@@ -112,6 +120,32 @@ class Customer implements ICustomerRepository {
                 })
                 .execute();
             return item.body.data;
+        } catch (error) {
+            return error
+        }
+    }
+
+    async getResetCustomerPassword(passwordResetToken: CustomerCreatePasswordResetToken) {
+        try {
+            return await this.apiRoot.withProjectKey({projectKey: this.projectKey})
+                .customers()
+                .passwordToken()
+                .post({
+                    body: passwordResetToken
+                }).execute()
+        } catch (error) {
+            return error
+        }
+    }
+
+    async resetCustomerPasswordWithToken(customerResetPassword: CustomerResetPassword) {
+        try {
+            return await this.apiRoot.withProjectKey({projectKey: this.projectKey})
+                .customers()
+                .passwordReset()
+                .post({
+                    body: customerResetPassword
+                }).execute()
         } catch (error) {
             return error
         }
